@@ -1,0 +1,23 @@
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - db_data:/var/lib/mysql
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - "${DATABASE_EXT_PORT:-3306}:3306"
+      - "${DATABASE_EXT_PORT:-3306}0:33060"
+
+  web:
+    build: .
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - ./:/opt/project
+    ports:
+      - "${WEB_EXT_PORT:-8000}:8000"
+
+volumes:
+  db_data:
